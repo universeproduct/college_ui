@@ -1,4 +1,8 @@
 import React, { useState } from 'react'
+//import Swal from 'sweetalert2';
+import Swal from 'sweetalert2/dist/sweetalert2.all.min.js';
+import 'sweetalert2/dist/sweetalert2.min.css';
+
 
 const DepartmentScreen = () => {
     const [deptData, setDeptData] = useState({deptCode: '',deptName: ''});
@@ -11,22 +15,51 @@ const DepartmentScreen = () => {
             }));
         };
         // ================================== Handles Adding the Dept to DB============================
-        const handleSumbit=()=>{
-            if(deptData.deptCode.length<5|| !deptData.deptCode){
-                alert("*Department Code must Be 5 Numbers")}
-            else if(!deptData.deptName){
-                alert("*Department Name required")
-            }
-            else{
-                let confirmation=confirm(`Adding ${deptData.deptName}, Press ok to confirm `)
-                if(confirmation){
-                    alert(`${deptData.deptName} has been created!`)
-                }
-                else{
-                    alert(`${deptData.deptName} Declined to Add!`)
-                }
-            }
-        }
+        
+
+const handleSubmit = () => {
+  if (!deptData.deptCode || deptData.deptCode.length < 5) {
+    Swal.fire({
+      title: 'Invalid Code',
+      text: 'Department code must be at least 5 characters long.',
+      
+      confirmButtonText: 'OK'
+    });
+  } else if (!deptData.deptName) {
+    Swal.fire({
+      title: 'Missing Name',
+      text: 'Department name is required.',
+      
+      confirmButtonText: 'OK'
+    });
+  } else {
+    Swal.fire({
+      title: `Add ${deptData.deptName}?`,
+      text: 'Press OK to confirm.',
+      
+      showCancelButton: true,
+      confirmButtonText: 'Yes, Add',
+      cancelButtonText: 'No, Cancel'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        Swal.fire({
+          title: 'Created!',
+          text: `${deptData.deptName} has been created.`,
+          
+          confirmButtonText: 'OK'
+        });
+      } else {
+        Swal.fire({
+          title: 'Cancelled',
+          text: `${deptData.deptName} was not added.`,
+    
+          confirmButtonText: 'OK'
+        });
+      }
+    });
+  }
+};
+
 // ================================== Handles Clear the TextBox Values============================
 
         const clearTextBox=()=>{
@@ -39,7 +72,7 @@ const DepartmentScreen = () => {
             <tbody className='sm:flex'>
                 <tr>
                     <td>
-                    <label htmlFor="deptCode" className='text-gray-600 text-xs md:text-sm'>*Enter Department Code</label>
+                    <label htmlFor="deptCode" className='text-gray-600 text-xs md:text-sm'>*Department Code</label>
                     </td>
                     <td>
                     <input onChange={handleDept} value={deptData.deptCode} type="text" name="deptCode" maxLength={5} minLength={5} required placeholder='eg:0001' id="deptCode" className="border-gray-400 mx-2 p-1 rounded-md border w-30 text-xs md:text-sm" /><br />
@@ -47,7 +80,7 @@ const DepartmentScreen = () => {
                 </tr>
                 <tr>
                     <td>
-                    <label htmlFor="deptName" className='text-gray-600 text-xs md:text-sm'>*Enter Department Name</label>
+                    <label htmlFor="deptName" className='text-gray-600 text-xs md:text-sm'>* Department Name</label>
                     </td>
                     <td>
                     <input onChange={handleDept} value={deptData.deptName} type="text" name="deptName" maxLength={150} required placeholder='eg:BSC' id="deptCode" className="border-gray-400  mx-2 p-1 rounded-md border w-30 text-xs md:text-sm" />
@@ -56,7 +89,7 @@ const DepartmentScreen = () => {
             </tbody>
         </table>          
         <div className="deptBtnGroup mt-5">
-            <button type="button" onClick={handleSumbit} className='p-1 md:text-sm text-xs rounded-md text-gray-100 hover:bg-green-500 mx-1 bg-green-800 cursor-pointer'>Save</button>
+            <button type="button" onClick={handleSubmit} className='p-1 md:text-sm text-xs rounded-md text-gray-100 hover:bg-green-500 mx-1 bg-green-800 cursor-pointer'>Save</button>
             <button type="button" onClick={clearTextBox} className='p-1 md:text-sm text-xs rounded-md text-gray-100 hover:bg-red-500 mx-1 bg-red-800 cursor-pointer'>Reset</button>
         </div>
        </form>
